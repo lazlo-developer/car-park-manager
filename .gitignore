@@ -1,0 +1,74 @@
+# Build results
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+build/
+out/
+bin/
+obj/
+
+# User-specific files
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Visual Studio Code
+.vscode/
+
+# Rider
+.idea/
+
+# Dotnet-specific
+*.vspscc
+*.vssscc
+*.dbmdl
+*.pdb
+
+# NuGet packages
+*.nupkg
+.nuget/
+packages/
+*.snupkg
+
+# Others
+*.log
+*.DS_Store
+*.env
+
+# ASP.NET
+appsettings.*.json
+appsettings.local.json
+
+# Test results
+TestResults/
+*.trx
+
+# Entity Framework
+Migrations/
+
+# Coverage
+coverage/
+*.coverage
+*.coveragexml
+
+# Auto-generated files
+Generated_Code/
+
+# Windows image file caches
+Thumbs.db
+ehthumbs.db
+
+# Temporary files
+~$*
+*.tmp
+*.bak
+*.swp
+*.swo
+
+# Resharper
+_ReSharper*/
+*.[Rr]e[Ss]harper
+
+.fake
