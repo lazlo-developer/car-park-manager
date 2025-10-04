@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CarParkManager.Application\CarParkManager.Application.csproj" />
+    <ProjectReference Include="..\CarParkManager.Domain\CarParkManager.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.9" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="9.0.9" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.9" />
+  </ItemGroup>
+
+</Project>
