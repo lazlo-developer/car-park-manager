@@ -19,7 +19,15 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<CarParkDbContext>();
-    await db.Database.MigrateAsync();
+    if (builder.Configuration["DatabaseProvider"] == "InMemory")
+    {
+        db.Database.EnsureCreated();
+    }
+    else
+    {
+        await db.Database.MigrateAsync();
+    }
+    
     SeedData.Seed(db, builder.Configuration);
 }
 

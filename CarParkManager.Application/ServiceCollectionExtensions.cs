@@ -11,7 +11,7 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddApplicationLayer(this IServiceCollection services)
     {
-        services.AddSingleton<ChargeCalculator>();
+        services.AddSingleton<IChargeCalculator,ChargeCalculator>();
         services.AddScoped<IParkingService, ParkingService>();
         services.AddFluentValidationAutoValidation();
         services.AddValidatorsFromAssemblyContaining<AllocateRequestValidator>();
