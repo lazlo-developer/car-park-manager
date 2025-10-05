@@ -12,6 +12,7 @@ public class ParkingSpaceRepository(CarParkDbContext db) : IParkingSpaceReposito
     public async Task<ParkingSpace?> GetSpaceByVehicleRegAsync(string vehicleReg) =>
         await db.ParkingSpaces
         .Include(x => x.CurrentSession)
+        .Include(x => x.ParkedVehicle)
         .FirstOrDefaultAsync(s => s.ParkedVehicle != null && s.ParkedVehicle.VehicleReg == vehicleReg);
 
     public async Task<List<ParkingSpace>> GetAllSpacesAsync() =>

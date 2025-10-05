@@ -9,6 +9,7 @@ public class AllocateRequestValidator : AbstractValidator<AllocateRequest>
     {
         RuleFor(x => x.VehicleReg)
             .NotEmpty()
+            .WithMessage("Please provide a vehicle registration number.")
             .MaximumLength(16);
             
         RuleFor(x => x.VehicleType)

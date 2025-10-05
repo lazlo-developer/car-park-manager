@@ -7,19 +7,15 @@ namespace CarParkManager.Application.Services;
 public class ParkingService(
     IParkingSpaceRepository spaceRepo,
     IParkingSessionRepository sessionRepo,
-    ChargeCalculator chargeCalculator) : IParkingService
+    IChargeCalculator chargeCalculator) : IParkingService
 {
-    private readonly IParkingSpaceRepository _spaceRepo = spaceRepo;
-    private readonly IParkingSessionRepository _sessionRepo = sessionRepo;
-    private readonly ChargeCalculator _chargeCalculator = chargeCalculator;
-
     public async Task<AllocateResponse?> AllocateAsync(AllocateRequest request)
     {
-        var existingSession = await _sessionRepo.GetActiveSessionAsync(request.VehicleReg);
+        var existingSession = await sessionRepo.GetActiveSessionAsync(request.VehicleReg);
         if (existingSession != null)
             throw new InvalidOperationException("Vehicle is already parked.");
 
-        var space = await _spaceRepo.GetFirstAvailableSpaceAsync();
+        var space = await spaceRepo.GetFirstAvailableSpaceAsync();
         if (space is null)
             return null;
 
@@ -30,12 +26,13 @@ public class ParkingService(
             SpaceNumber = space.SpaceNumber,
             TimeIn = DateTime.UtcNow
         };
+        await sessionRepo.AddSessionAsync(session);
 
         space.IsOccupied = true;
         space.ParkedVehicle = vehicle;
         space.CurrentSession = session;
 
-        await _spaceRepo.UpdateSpaceAsync(space);
+        await spaceRepo.UpdateSpaceAsync(space);
 
         return new AllocateResponse
         {
@@ -47,7 +44,7 @@ public class ParkingService(
 
     public async Task<StatusResponse> GetStatusAsync()
     {
-        var allSpaces = await _spaceRepo.GetAllSpacesAsync();
+        var allSpaces = await spaceRepo.GetAllSpacesAsync();
         int available = allSpaces.Count(s => !s.IsOccupied);
         int occupied = allSpaces.Count(s => s.IsOccupied);
         return new StatusResponse
@@ -59,13 +56,13 @@ public class ParkingService(
 
     public async Task<ExitResponse?> ExitAsync(ExitRequest request)
     {
-        var space = await _spaceRepo.GetSpaceByVehicleRegAsync(request.VehicleReg);
+        var space = await spaceRepo.GetSpaceByVehicleRegAsync(request.VehicleReg);
         if (space is null || space.CurrentSession is null)
             return null;
 
         var session = space.CurrentSession;
         session.TimeOut = DateTime.UtcNow;
-        session.VehicleCharge = _chargeCalculator.Calculate(
+        session.VehicleCharge = chargeCalculator.Calculate(
             space.ParkedVehicle?.VehicleType ?? throw new ArgumentException("Parked vehicle is missing."),
             session.TimeIn,
             session.TimeOut.Value);
@@ -74,8 +71,8 @@ public class ParkingService(
         space.ParkedVehicle = null;
         space.CurrentSession = null;
 
-        await _spaceRepo.UpdateSpaceAsync(space);
-        await _sessionRepo.UpdateSessionAsync(session);
+        await spaceRepo.UpdateSpaceAsync(space);
+        await sessionRepo.UpdateSessionAsync(session);
 
         return new ExitResponse
         {
