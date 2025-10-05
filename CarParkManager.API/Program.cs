@@ -1,6 +1,7 @@
 using CarParkManager.Application;
 using CarParkManager.Domain;
 using CarParkManager.Infrastructure;
+using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,6 +19,7 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<CarParkDbContext>();
+    await db.Database.MigrateAsync();
     SeedData.Seed(db, builder.Configuration);
 }
 
@@ -29,7 +31,7 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
     app.MapScalarApiReference("/docs", opts =>
         opts.WithTitle("Car Park Management API")
-            .WithDarkMode(true));
+            .WithDarkMode());
 }
 
 app.Run();
